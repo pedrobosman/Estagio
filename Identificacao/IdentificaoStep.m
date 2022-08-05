@@ -28,7 +28,7 @@ InicioDegrauResfriamento  = 854;%704;
 FimDegrauResfriamento = 1205;%983;
 
 MVAquecimento = Malha1MV1(InicioDegrauAquecimento:FimDegrauAquecimento)-AmplitudeInicialAq;
-MVResfriamento = AmplitudeInicialRe-Malha1MV1(InicioDegrauResfriamento:FimDegrauResfriamento);
+MVResfriamento = Malha1MV1(InicioDegrauResfriamento:FimDegrauResfriamento)-AmplitudeInicialRe;
 
 PV1Aquecimento = Malha1PV1(InicioDegrauAquecimento:FimDegrauAquecimento);
 PV1Aquecimento = PV1Aquecimento - PV1Aquecimento(1,1);
@@ -94,7 +94,7 @@ InicioDegrauResfriamento  = 786;
 FimDegrauResfriamento = 1208;
 
 MVAquecimento = Malha2MV2(InicioDegrauAquecimento:FimDegrauAquecimento)-AmplitudeInicialAq;
-MVResfriamento = AmplitudeInicialRe-Malha2MV2(InicioDegrauResfriamento:FimDegrauResfriamento);
+MVResfriamento = Malha2MV1(InicioDegrauResfriamento:FimDegrauResfriamento)-AmplitudeInicialRe;
 
 PV1Aquecimento = Malha2PV1(InicioDegrauAquecimento:FimDegrauAquecimento);
 PV1Aquecimento = PV1Aquecimento - PV1Aquecimento(1,1);
@@ -156,13 +156,25 @@ G22.outputd = G22parametros(3);
 G = [G11, G12;G21,G22] %#ok<NOPTS> 
 
 
-% t = (0:length(MVAquecimento)-1)*DeltaT;
-% 
-% y_sim = lsim(G11sub,MVAquecimento,t);
-% figure
-% plot(t,PV1Aquecimento), hold on
-% plot(t,y_sim), grid
-% title({'Resposta ao Degrau','Modelo de Aquecimento'})
-% legend('Dados','Modelo','Location','SouthEast')
-% xlabel('Tempo (s)')
-% ylabel('Variação de Temperatura (ºC)')
+t = (0:length(MVAquecimento)-1)*DeltaT;
+
+y_sim = lsim(G22sub,MVAquecimento,t);
+figure(1)
+plot(t,PV2Aquecimento), hold on
+plot(t,y_sim), grid
+title({'Resposta ao Degrau','Modelo de Aquecimento'})
+legend('Dados','Modelo','Location','SouthEast')
+xlabel('Tempo (s)')
+ylabel('Variação de Temperatura (ºC)')
+
+
+t = (0:length(MVResfriamento)-1)*DeltaT;
+
+y_sim = lsim(G22desc,MVResfriamento,t);
+figure(2)
+plot(t,PV2Resfriamento), hold on
+plot(t,y_sim), grid
+title({'Resposta ao Degrau','Modelo de Resfriamento'})
+legend('Dados','Modelo','Location','SouthEast')
+xlabel('Tempo (s)')
+ylabel('Variação de Temperatura (ºC)')
