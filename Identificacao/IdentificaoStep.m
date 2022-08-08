@@ -49,6 +49,8 @@ PV2Resfriamento = PV2Resfriamento - PV2Resfriamento(1,1);
 
 G11sub = tf(G0,[T1 1]);
 G11sub.outputd = L;
+grafico(DeltaT,G11sub,MVAquecimento,PV1Aquecimento,'Modelo de Aquecimento - M1 (G11sub)',1);
+
 
 G11parametros = [G0, T1, L];
 
@@ -57,6 +59,8 @@ G11parametros = [G0, T1, L];
 
 G11desc = tf(G0,[T1 1]);
 G11desc.outputd = L;
+grafico(DeltaT,G11desc,MVResfriamento,PV1Resfriamento,'Modelo de Resfriamento - M1(G11desc)',2);
+
 
 G11parametros = (G11parametros + [G0, T1, L])/2;
 
@@ -70,6 +74,7 @@ G11.outputd = G11parametros(3);
 
 G21sub = tf(G0,[T1 1]);
 G21sub.outputd = L;
+grafico(DeltaT,G21sub,MVAquecimento,PV2Aquecimento,'Modelo de Aquecimento - M1(G21desc)',3);
 
 G21parametros = [G0, T1, L];
 
@@ -78,6 +83,8 @@ G21parametros = [G0, T1, L];
 
 G21desc = tf(G0,[T1 1]);
 G21desc.outputd = L;
+
+grafico(DeltaT,G21desc,MVResfriamento,PV2Resfriamento,'Modelo de Aquecimento - M1(G21desc)',4);
 
 %Planta Média G21
 G21parametros = (G21parametros + [G0, T1, L])/2;
@@ -116,6 +123,8 @@ PV2Resfriamento = PV2Resfriamento - PV2Resfriamento(1,1);
 
 G12sub = tf(G0,[T1 1]);
 G12sub.outputd = L;
+grafico(DeltaT,G12sub,MVAquecimento,PV1Aquecimento,'Modelo de Aquecimento - M1 (G12sub)',5);
+
 
 G12parametros = [G0, T1, L];
 
@@ -124,7 +133,7 @@ G12parametros = [G0, T1, L];
 
 G12desc = tf(G0,[T1 1]);
 G12desc.outputd = L;
-
+grafico(DeltaT,G12desc,MVResfriamento,PV1Resfriamento,'Modelo de Resfriamento - M1(G12desc)',6);
 
 %Planta Média G12
 G12parametros = (G12parametros + [G0, T1, L])/2;
@@ -137,6 +146,7 @@ G12.outputd = G12parametros(3);
 
 G22sub = tf(G0,[T1 1]);
 G22sub.outputd = L;
+grafico(DeltaT,G22sub,MVAquecimento,PV2Aquecimento,'Modelo de Aquecimento - M1(G22sub)',7);
 
 G22parametros = [G0, T1, L];
 
@@ -146,6 +156,7 @@ G22parametros = [G0, T1, L];
 
 G22desc = tf(G0,[T1 1]);
 G22desc.outputd = L;
+grafico(DeltaT,G22desc,MVResfriamento,PV2Resfriamento,'Modelo de Resfriamento - M1(G22desc)',8);
 
 %Planta Média G22
 G22parametros = (G22parametros + [G0, T1, L])/2;
@@ -156,25 +167,16 @@ G22.outputd = G22parametros(3);
 G = [G11, G12;G21,G22] %#ok<NOPTS> 
 
 
-t = (0:length(MVAquecimento)-1)*DeltaT;
-
-y_sim = lsim(G22sub,MVAquecimento,t);
-figure(1)
-plot(t,PV2Aquecimento), hold on
-plot(t,y_sim), grid
-title({'Resposta ao Degrau','Modelo de Aquecimento'})
-legend('Dados','Modelo','Location','SouthEast')
-xlabel('Tempo (s)')
-ylabel('Variação de Temperatura (ºC)')
 
 
-t = (0:length(MVResfriamento)-1)*DeltaT;
 
-y_sim = lsim(G22desc,MVResfriamento,t);
-figure(2)
-plot(t,PV2Resfriamento), hold on
-plot(t,y_sim), grid
-title({'Resposta ao Degrau','Modelo de Resfriamento'})
-legend('Dados','Modelo','Location','SouthEast')
-xlabel('Tempo (s)')
-ylabel('Variação de Temperatura (ºC)')
+% t = (0:length(MVResfriamento)-1)*DeltaT;
+% 
+% y_sim = lsim(G22desc,MVResfriamento,t);
+% figure(2)
+% plot(t,PV2Resfriamento), hold on
+% plot(t,y_sim), grid
+% title({'Resposta ao Degrau','Modelo de Resfriamento'})
+% legend('Dados','Modelo','Location','SouthEast')
+% xlabel('Tempo (s)')
+% ylabel('Variação de Temperatura (ºC)')
