@@ -3,6 +3,7 @@ load('GPlanta.mat');
 G11 = G(1,1);
 G22 = G(2,2);
 
+
 opc = InicializarClienteOPC('localhost',48030);
 
 while strcmp(opc{1}.Name,'Erro')
@@ -10,6 +11,8 @@ while strcmp(opc{1}.Name,'Erro')
    [opc] = InicializarClienteOPC('localhost',48030);
    pause(1);
 end
+
+
 t = 0:2:1000;
 
 u = ones(1,length(t));
@@ -18,8 +21,8 @@ y_step = lsim(G11,u,t);
 %plot(t,y_step,'k-');
 
 
-Np = 11;    %H Predição
-M = 4;      %H Controle
+Np = 500;    %H Predição
+M = 200;      %H Controle
 
 S_n = y_step(2:end); 
 S = toeplitz(S_n(1:Np),[S_n(1) zeros(1,M-1)]);
@@ -30,13 +33,20 @@ for j = 2:Np
     h(j) = S(j) - S(j-1);
 end
 
+h = h';
+H = h(1,2:end);
+for i = 2:Np
+    H = [H; h(1,i+1:end) zeros(1,i-1)];
+end
+h = h';
 
-ySetPoint = 35*ones(Np,1);
-yRealk = 0*zeros(Np,1);
+ySetPoint = 30*ones(Np,1);
+yRealk = zeros(Np,1);
 yPredicao = 0;
 P = zeros(Np,1);
-R = 0;
+DeltaUPassados = zeros(Np-1,1);
 k = 1;
+R = 0;
 e = 0;
 
 while(true)
@@ -49,26 +59,24 @@ yRealk = PV1*ones(Np,1);
 e = ySetPoint - yRealk - P;
 
 %Cálculo das ações de controle
-DeltaU = (S'*S)\S'*e; 
+DeltaU = (S'*S+R)\S'*e; 
+
+disp('PV:');
+disp(PV1);
+disp('MV:');
 disp(DeltaU(1));
+
 DefinirMVs(opc,1,DeltaU(1));
 
-DeltaUPassado(k) = DeltaU(1);
+DeltaUPassados = [DeltaU(1); DeltaUPassados(1:end-1)];
 
 %Predição
-yPredicao = S*DeltaU + yRealk + P; 
+%yPredicao = S*DeltaU + yRealk + P; 
 
 %Cálculo das ações passadas
-for n = 1:Np
+P = H*DeltaUPassados;
+P(Np) = 0;
 
-    for i = n+1:Np
-        if (k+n-i)>0
-            P(n) = h(i)*DeltaUPassado(k+n-i);
-        end
-    end
-end
-
-disp(P);
-k = k + 1;
+%k = k + 1;
 pause(2);
 end
