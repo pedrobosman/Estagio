@@ -72,7 +72,7 @@ DeltaUPassados = [DeltaU(1); DeltaUPassados(1:end-1)];
 
 %Predição
 %yPredicao = S*DeltaU + yRealk + P; 
-
+h
 %Cálculo das ações passadas
 P = H*DeltaUPassados;
 P(Np) = 0;
