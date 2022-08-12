@@ -23,9 +23,8 @@ S       = 1 / (1+G*K);
 T       = 1 - S;
 
 
-w = logspace(-15,2,1000);
-JvSIMC = max(bode(Gvy/s,w));
-JuSIMC = max(bode(Gwu,w));
+JvSIMC = max(bode(Gvy/s));
+JuSIMC = max(bode(Gwu));
 MsSIMC = max(bode(S));
 MtSIMC = max(bode(T));
 
@@ -49,7 +48,7 @@ options = optimoptions('fmincon', 'Display', 'iter');
 A = []; b = [];
 Aeq = []; beq = [];
 lb = [0;0]; ub = [];
-x = fmincon(@(x) objfunJv(x,G,w),k0, A, b, Aeq, beq, lb, ub, @(x) nonLinCon(x, G, Ms, Mt, Ju,w), options);
+x = fmincon(@(x) objfunJv(x,G),k0, A, b, Aeq, beq, lb, ub, @(x) nonLinCon(x, G, Ms, Mt, Ju), options);
 Kopt = pid(x(1), x(2));
 
 Topt = feedback(G*Kopt,1);
@@ -58,26 +57,26 @@ step(Topt);
 
 % Cálculo dos critérios de robustez para o controlador final
 JvOpt = objfunJv(x,G,w);
-C = nonLinCon(x, G, Ms, Mt, Ju,w);
+C = nonLinCon(x, G, Ms, Mt, Ju);
 JuOpt = C(1)+Ju;
 Msopt = C(2)+Ms;
 Mtopt = C(3)+Mt;
 
 % Função objetivo do problema de otimização
-function Jv = objfunJv(k, G,w)
+function Jv = objfunJv(k, G)
     K = pid(k(1), k(2));
     Gvy = G/(1+G*K);
     s = tf('s');
-    Jv = max(bode(Gvy/s,w));
+    Jv = max(bode(Gvy/s));
 end
 
 % restrições não lineares do problema de otimização
-function [C, Ceq] = nonLinCon(k, G, Ms, Mt, Ju,w)
+function [C, Ceq] = nonLinCon(k, G, Ms, Mt, Ju)
     K = pid(k(1), k(2));
     S = 1/(1 + G*K);
     T = G*K*S;
     Guw = K*S;
-    JuNorm = max(bode(Guw,w));
+    JuNorm = max(bode(Guw));
     Snorm = max(bode(S));
     Tnorm = max(bode(T));
     %[gm,pm] = margin(G*K);
