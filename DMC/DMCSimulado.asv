@@ -45,7 +45,7 @@ h = h';
 %% Iniciando valores da Simulação
 
 % Setpoint
-ySetPoint = (G11.Num{1}(2))*ones(Np,1);
+ySetPoint = 0.3764*ones(Np,1);
 % Valor medido (Simulado)
 yRealk = zeros(Np,1);
 % Y de Predição
@@ -56,7 +56,7 @@ P = zeros(Np,1);
 DeltaUPassados = zeros(Np-1,1);
 
 % Fator de Supressão R
-Peso = 5;
+Peso = 30;
 R = Peso*diag(diag(ones(M)));
 
 % Erro
@@ -70,7 +70,7 @@ tempo   = zeros(iteracoesDaSimulacao,1);
 
 
 %% Iniciando a Simulação
-for k= 1:(iteracoesDaSimulacao)
+for k= 1:(iteracoesDaSimulacao-1)
 
     tempo(k) = (k-1)*Ts;
     % Ler Y /Simulado  
@@ -123,10 +123,7 @@ for k= 1:(iteracoesDaSimulacao)
     end   
 end
 
-hold on;
-plot(tempo,y);
-plot(tempo,u);
-plot(t,y_step);
-legend('y','u','y Step');
-xlabel('Tempo (s)');
+
+plot(tempo,y,t*Ts,y_step,tempo,u);
+xlabel('Tempo');
 ylabel('y');

@@ -16,7 +16,7 @@ t       = 0:T:55;
 num     = [Kp];
 den     = [taup 1];
 
-[y,x]   = step(num,den,t);
+[y,x]   = step(num,den,t)
 
 y       = [zeros(Ntd,1); y(1:length(y)-Ntd)];
 

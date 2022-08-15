@@ -1,4 +1,5 @@
 clear;clc;
+
 load('GPlanta.mat');
 G11 = G(1,1);
 G22 = G(2,2);
@@ -42,13 +43,16 @@ end
 h = h';
 
 
-ySetPoint = 30*ones(Np,1);
+ySetPoint = 34*ones(Np,1);
 yRealk = zeros(Np,1);
 yPredicao = 0;
 P = zeros(Np,1);
 DeltaUPassados = zeros(Np-1,1);
-R = 0;
+R = 10*ones(M,M);
 e = 0;
+u = 0;
+uAnterior = 0;
+
 
 while(true)
 PVS = ReceberPVs(opc); %Leitura da Planta yk
@@ -60,21 +64,11 @@ yRealk = PV1*ones(Np,1);
 e = ySetPoint - yRealk - P;
 
 %Cálculo das ações de controle
-DeltaU = (S'*S+R)\S'*e; 
-disp('**********************************************');
-disp('PV:');
-disp(PV1);
-disp('MV:');
-disp(DeltaU(1));
-
-DefinirMVs(opc,1,DeltaU(1));
-
+DeltaU = (S'*S+R)\(S'*e); 
 DeltaUPassados = [DeltaU(1); DeltaUPassados(1:end-1)];
 
 %Predição
 yPredicao = S*DeltaU + yRealk + P; 
-disp(yPredicao(1:10));
-disp('**********************************************');
 
 %Cálculo das ações passadas
 p = H*DeltaUPassados;
@@ -85,6 +79,21 @@ for i=1:Np
         P(i) = P(i) + p(m);
      end
 end
+
+
+u = uAnterior + DeltaU(1);
+uAnterior = u;
+
+DefinirMVs(opc,1,u);
+
+disp('**********************************************');
+disp('PV:');
+disp(PV1);
+disp('MV:');
+disp(u);
+disp('**********************************************');
+disp(yPredicao(1:10));
+disp('**********************************************');
 
 pause(2);
 clc;
