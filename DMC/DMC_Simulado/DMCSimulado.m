@@ -7,7 +7,7 @@ G22 = G(2,2);
 
 %% Obtendo modelo discreto - simular y(k)
 % Modificar y(k) na simulação
-Ts = 10;
+Ts = 2;
 GD11 = c2d(G11,Ts);
 
 %% Obtendo valores do Step p/ calcular parâmetros DMC
@@ -19,8 +19,8 @@ y_step = lsim(G11,u,t);
 
 %% Definir Horizontes de predição e controle (Np e M)
 
-Np = 15;    %H Predição
-M = 4;      %H Controle
+Np = 200;    %H Predição
+M = 1;      %H Controle
 
 %% Obtendo a matriz dinâmica S (coeficientes Sn da resposta ao degrau)
 S_n = y_step(2:end); 
@@ -42,10 +42,10 @@ end
 h = h';
 
 
-%% Iniciando valores da Simulação
+%% Iniciando variáveis para a Simulação
 
 % Setpoint
-ySetPoint = (G11.Num{1}(2))*ones(Np,1);
+ySetPoint = 32*ones(Np,1);%(G11.Num{1}(2))*ones(Np,1);
 % Valor medido (Simulado)
 yRealk = zeros(Np,1);
 % Y de Predição
@@ -74,22 +74,22 @@ for k= 1:(iteracoesDaSimulacao)
 
     tempo(k) = (k-1)*Ts;
     % Ler Y /Simulado  
-    if  k==1
-        y(k) = 0;
-    elseif k<=2
-        y(k) = 0.9488*y(k-1) + 0.0007667*u(k-1);
-    else
-        y(k) = 0.9488*y(k-1) + 0.0007667*u(k-1)+0.01852*u(k-2);    
-    end
 %     if  k==1
 %         y(k) = 0;
-%     elseif k<=5
-%         y(k) = 0.9895*y(k-1);
-%     elseif k<=6
-%         y(k) = 0.9895*y(k-1)+0.0007667*u(k-5);
+%     elseif k<=2
+%         y(k) = 0.9488*y(k-1) + 0.0007667*u(k-1);
 %     else
-%         y(k) = 0.9895*y(k-1)+0.0007667*u(k-5)+0.003172*u(k-6);    
+%         y(k) = 0.9488*y(k-1) + 0.0007667*u(k-1)+0.01852*u(k-2);    
 %     end
+    if  k==1
+        y(k) = 0;
+    elseif k<=5
+        y(k) = 0.9895*y(k-1);
+    elseif k<=6
+        y(k) = 0.9895*y(k-1)+0.0007667*u(k-5);
+    else
+        y(k) = 0.9895*y(k-1)+0.0007667*u(k-5)+0.003172*u(k-6);    
+    end
 
     % Execute programa DMC
     yRealk = y(k)*ones(Np,1);
