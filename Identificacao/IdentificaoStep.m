@@ -165,18 +165,3 @@ G22.outputd = G22parametros(3);
 %% Modelos Médios
 
 G = [G11, G12;G21,G22] %#ok<NOPTS> 
-
-
-
-
-
-% t = (0:length(MVResfriamento)-1)*DeltaT;
-% 
-% y_sim = lsim(G22desc,MVResfriamento,t);
-% figure(2)
-% plot(t,PV2Resfriamento), hold on
-% plot(t,y_sim), grid
-% title({'Resposta ao Degrau','Modelo de Resfriamento'})
-% legend('Dados','Modelo','Location','SouthEast')
-% xlabel('Tempo (s)')
-% ylabel('Variação de Temperatura (ºC)')
