@@ -1,6 +1,6 @@
 clc, clear, close all;
 
-%% Frequeências limites do gráfico de bode
+%% Frequências limites do gráfico de bode
 % Bode Utilizado p/ encontrar a norma do inf
 bodeFreqMin = 1e-10;
 bodeFreqMax = 20;
@@ -11,7 +11,7 @@ load('GPlanta.mat');
 G = G(1,1);
 
 %% Controlador inicial
-[G11Parametros(1), G11Parametros(2)] = Simc1Ordem(G(1,1),5); 
+[G11Parametros(1), G11Parametros(2)] = Simc1Ordem(G(1,1),1); 
 Kp          =     G11Parametros(1);
 TiG11       =     G11Parametros(2);
 Ki          =     Kp/TiG11;

@@ -2,8 +2,8 @@ clear;clc;
 load("GPlanta.mat");
 G11Parametros = zeros(1,2); %K,tauI
 G22Parametros = zeros(1,2);
-[G11Parametros(1), G11Parametros(2)] = Simc1Ordem(G(1,1),1); 
-[G22Parametros(1), G22Parametros(2)] = Simc1Ordem(G(2,2),1); 
+[G11Parametros(1), G11Parametros(2)] = Simc1Ordem(G(1,1),5); 
+[G22Parametros(1), G22Parametros(2)] = Simc1Ordem(G(2,2),5); 
 
 KpG11 =     G11Parametros(1)
 TiG11 =     G11Parametros(2)
